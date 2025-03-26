@@ -23,7 +23,9 @@ app.use(
 
 app.use(express.static("public"));
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/Plumeria";
+// const MONGO_URL = "mongodb://127.0.0.1:27017/Plumeria";
+const MONGO_URL = "mongodb+srv://enquiry:cWkQzlp42pu8yu7N@cluster0.r9w8y.mongodb.net";
+
 
 mongoose
   .connect(MONGO_URL)

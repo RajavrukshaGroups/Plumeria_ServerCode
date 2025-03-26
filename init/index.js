@@ -7,14 +7,15 @@ import RoomAvailability from "../Models/RoomAvailability.js";
 import Room from "../Models/Room.js";
 import roomAvailabilityData from "./roomAvailability.js";
 
-const mongo_URL = "mongodb://127.0.0.1:27017/Plumeria";
+// const mongo_URL = "mongodb://127.0.0.1:27017/Plumeria";
+const mongo_URL="mongodb+srv://enquiry:cWkQzlp42pu8yu7N@cluster0.r9w8y.mongodb.net"
 
 const main = async () => {
   try {
     await mongoose.connect(mongo_URL);
     console.log("Connected to database");
 
-    // await Listing.deleteMany({});
+    await Listing.deleteMany({});
     // await Booking.deleteMany({});
     await Listing.insertMany(initData);
     // await RoomAvailability.deleteMany({});
