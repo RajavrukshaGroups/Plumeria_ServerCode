@@ -21,7 +21,7 @@ const roomDetails = async (req, res) => {
 const checkRoomsAvailability = async (req, res) => {
   try {
     const { checkInDate, checkOutDate, rooms } = req.body;
-    console.log("Request body:", req.body);
+    console.log("Request body1233232423", req.body);
 
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
