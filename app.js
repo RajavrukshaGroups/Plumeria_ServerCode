@@ -9,6 +9,7 @@ import http from "http";
 import userRoutes from "./routes/userRoutes.js";
 import roomRoutes from "./routes/roomRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import bookingStatusCheck from "./routes/bookingStatusRoutes.js";
 
 const app = express();
 // dotenv.config();
@@ -38,6 +39,7 @@ mongoose
 app.use("/", userRoutes);
 app.use("/rooms", roomRoutes);
 app.use("/payments", paymentRoutes);
+app.use("/bookings", bookingStatusCheck);
 // app.get("/", (req, res) => {
 //   res.send("server is working");
 // });
