@@ -15,11 +15,11 @@ const main = async () => {
     await mongoose.connect(mongo_URL);
     console.log("Connected to database");
 
-    await Listing.deleteMany({});
+    // await Listing.deleteMany({});
     // await Booking.deleteMany({});
-    await Listing.insertMany(initData);
+    // await Listing.insertMany(initData);
     // await RoomAvailability.deleteMany({});
-    // await RoomAvailability.insertMany(roomAvailabilityData);
+    await RoomAvailability.insertMany(roomAvailabilityData);
     // await Booking.insertMany(bookingsData);
     console.log("Database initialized with room data.");
 

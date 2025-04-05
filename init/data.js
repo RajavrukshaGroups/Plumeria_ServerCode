@@ -1,7 +1,7 @@
 const RoomDetails = [
   {
     roomType: "Deluxe Rooms",
-    maxRoomsAvailable: 5, // Maximum rooms available
+    maxRoomsAvailable: 15, // Maximum rooms available
     checkIn: "11:00 AM", // Check-in time
     checkOut: "1:00 PM", // Check-out time
     images: [
@@ -160,7 +160,7 @@ const RoomDetails = [
   },
   {
     roomType: "Villa Rooms",
-    maxRoomsAvailable: 18, // Maximum rooms available
+    maxRoomsAvailable: 7, // Maximum rooms available
     checkIn: "11:00 AM", // Check-in time
     checkOut: "1:00 PM", // Check-out time
     images: [
