@@ -9,6 +9,7 @@
     "nanoid": "^5.1.5",
     "nodemailer": "^6.10.0",
     "nodemon": "^3.1.9",
+    "pdfkit": "^0.16.0",
     "razorpay": "^2.9.6"
   },
   "name": "plumeria_servercode",

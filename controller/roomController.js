@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import Booking from "../Models/Booking.js";
 import Room from "../Models/Room.js";
 import RoomAvailability from "../Models/RoomAvailability.js";
+import sendBookingEmails from "../utils/sendBookingEmail.js";
 
 const roomDetails = async (req, res) => {
   try {
@@ -682,6 +683,17 @@ const createBooking = async (req, res) => {
         );
       }
     }
+
+    await sendBookingEmails({
+      bookingId,
+      guestDetails,
+      selectedRooms,
+      formattedCheckInDate,
+      formattedCheckOutDate,
+      totalAmount,
+      advancePayment,
+      remainingAmount,
+    });
 
     return res.status(201).json({
       success: true,
