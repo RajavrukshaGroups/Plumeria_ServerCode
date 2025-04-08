@@ -1,6 +1,9 @@
 import "dotenv/config";
 import nodemailer from "nodemailer";
 import generateInvoicePdf from "./generatedInvoicePdf.js";
+import uploadToCloudinary from "./uploadToCloudinary.js";
+import Booking from "../Models/Booking.js";
+import axios from "axios";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -31,6 +34,16 @@ const sendBookingEmails = async ({
     remainingAmount,
   });
 
+  const cloudinaryPdfUrl = await uploadToCloudinary(pdfPath);
+  await Booking.findOneAndUpdate(
+    { bookingId },
+    { invoicePdfUrl: cloudinaryPdfUrl }
+  );
+
+  const cloudinaryFileResponse = await axios.get(cloudinaryPdfUrl, {
+    responseType: "arraybuffer",
+  });
+
   const resortMailOptions = {
     from: `"Plumeria Resort Booking" <${process.env.PLUMERIA_RESORT_MAIL}>`,
     to: process.env.PLUMERIA_RESORT_MAIL,
@@ -48,6 +61,7 @@ const sendBookingEmails = async ({
         <p><strong>Advance Paid:</strong> ₹${advancePayment || totalAmount}</p>
         <p><strong>Remaining:</strong> ₹${remainingAmount || 0}</p>
         <h3>Rooms & Guests:</h3>
+        <p><strong>Invoice PDF:</strong> <a href="${cloudinaryPdfUrl}" target="_blank">Download Invoice</a></p>
         <ul>
           ${selectedRooms
             .map(
@@ -64,43 +78,22 @@ const sendBookingEmails = async ({
             : ""
         }
       `,
+    // attachments: [
+    //   {
+    //     filename: `Invoice-${bookingId}.pdf`,
+    //     path: cloudinaryPdfUrl,
+    //     contentType: "application/pdf",
+    //   },
+    // ],
+    attachments: [
+      {
+        filename: `Invoice-${bookingId}.pdf`,
+        // path: cloudinaryFileResponse.data,
+        content: Buffer.from(cloudinaryFileResponse.data),
+        contentType: "application/pdf",
+      },
+    ],
   };
-
-  //   const clientMailOptions = {
-  //     from: `"Plumeria Resort" <${process.env.PLUMERIA_RESORT_MAIL}>`,
-  //     to: guestDetails.email,
-  //     subject: `🎉 Your Booking is Confirmed - ${bookingId}`,
-  //     html: `
-  //     <h2>Thank you for booking with Plumeria Resort!</h2>
-  //     <p>Your booking ID is <strong>${bookingId}</strong></p>
-  //     <p><strong>Check-in:</strong> ${formattedCheckInDate}</p>
-  //     <p><strong>Check-out:</strong> ${formattedCheckOutDate}</p>
-  //     <p><strong>Total Amount:</strong> ₹${totalAmount}</p>
-  //     <p><strong>Amount Paid:</strong> ₹${advancePayment || totalAmount}</p>
-  //     <p><strong>Remaining Amount:</strong> ₹${remainingAmount || 0}</p>
-  //     <h3>Guest Details:</h3>
-  //     <p>${guestDetails.firstName} ${guestDetails.lastName} (${
-  //       guestDetails.phone
-  //     })</p>
-  //     <h3>Room Info:</h3>
-  //     <ul>
-  //       ${selectedRooms
-  //         .map(
-  //           (r) =>
-  //             `<li>${r.roomType}: ${r.count || 1} room(s), Persons: ${
-  //               r.persons
-  //             }, Adults: ${r.adults}, Children: ${r.children}</li>`
-  //         )
-  //         .join("")}
-  //     </ul>
-  //     ${
-  //       guestDetails.specialRequests
-  //         ? `<p><strong>Special Request:</strong> ${guestDetails.specialRequests}</p>`
-  //         : ""
-  //     }
-  //     <p>We look forward to hosting you!</p>
-  //   `,
-  //   };
 
   const clientMailOptions = {
     from: `"Plumeria Resort" <${process.env.PLUMERIA_RESORT_MAIL}>`,
@@ -174,7 +167,8 @@ const sendBookingEmails = async ({
     attachments: [
       {
         filename: `Invoice-${bookingId}.pdf`,
-        path: pdfPath,
+        // path: cloudinaryFileResponse.data,
+        content: Buffer.from(cloudinaryFileResponse.data),
         contentType: "application/pdf",
       },
     ],

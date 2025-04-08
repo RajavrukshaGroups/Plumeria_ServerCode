@@ -75,6 +75,7 @@ const bookingSchema = new mongoose.Schema({
     code: String,
     amount: Number,
   },
+  invoicePdfUrl:String,
 });
 
 const Booking = mongoose.model("Booking", bookingSchema);
