@@ -16,15 +16,22 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// app.use(
+//   cors({
+//     // origin: "https://plumeriaresort.in",
+//     // origin: "http://localhost:5173",
+//     origin: "*",
+//     credentials: true,
+//   })
+// );
 app.use(
   cors({
-    // origin: "https://plumeriaresort.in",
-    // origin: "http://localhost:5173",
-    origin: "*",
+    origin: "https://plumeriaresort.in" || "https://test.plumeriaresort.in",
+    // origin: "https://test.plumeriaresort.in",
+    // origin: "*",
     credentials: true,
   })
 );
-
 app.use(express.static("public"));
 
 // const MONGO_URL = "mongodb://127.0.0.1:27017/Plumeria";
