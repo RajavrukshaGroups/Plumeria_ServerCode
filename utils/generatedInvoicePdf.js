@@ -1,6 +1,7 @@
 import PDFDocument from "pdfkit";
 import fs from "fs";
 import path from "path";
+import axios from "axios";
 
 const generateInvoicePdf = async ({
   bookingId,
@@ -17,20 +18,34 @@ const generateInvoicePdf = async ({
     fs.mkdirSync("invoices");
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const doc = new PDFDocument({ margin: 50 });
     const stream = fs.createWriteStream(pdfPath);
     doc.pipe(stream);
+
+    // --- LOGO ---
+    try {
+      const imageUrl =
+        "https://res.cloudinary.com/daoulitkw/image/upload/v1744175217/plumeria_invoice_logo_vbzszb.jpg";
+      const imageResponse = await axios.get(imageUrl, {
+        responseType: "arraybuffer",
+      });
+      const imageBuffer = Buffer.from(imageResponse.data);
+      doc.image(imageBuffer, doc.page.width / 2 - 90, 30, { width: 180 });
+      doc.moveDown(5);
+    } catch (err) {
+      console.error("Error loading logo image:", err);
+    }
 
     // --- HEADER ---
     doc
       .fillColor("#222")
       .fontSize(24)
       .font("Helvetica-Bold")
-      .text("Plumeria Resort", { align: "center" })
+      // .text("Plumeria Resort", { align: "center" })
       .fontSize(12)
       .fillColor("#666")
-      .text("Luxury Stay in the Lap of Nature", { align: "center" })
+      // .text("Luxury Stay in the Lap of Nature", { align: "center" })
       .moveDown(0.5)
       .fillColor("#000")
       .font("Helvetica")
