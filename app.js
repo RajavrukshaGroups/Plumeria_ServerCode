@@ -24,14 +24,19 @@ app.use(express.urlencoded({ extended: true }));
 //     credentials: true,
 //   })
 // );
-app.use(
-  cors({
-    origin: "https://plumeriaresort.in" || "https://test.plumeriaresort.in",
-    // origin: "https://test.plumeriaresort.in",
-    // origin: "*",
-    credentials: true,
-  })
-);
+
+const allowedOrigins = ["https://plumeriaresort.in", "https://test.plumeriaresort.in"];
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true, // Allow cookies and authentication headers
+}));
+
 app.use(express.static("public"));
 
 // const MONGO_URL = "mongodb://127.0.0.1:27017/Plumeria";
