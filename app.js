@@ -10,6 +10,7 @@ import userRoutes from "./routes/userRoutes.js";
 import roomRoutes from "./routes/roomRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import bookingStatusCheck from "./routes/bookingStatusRoutes.js";
+import adminroutes from "./routes/adminRoutes/adminRoutes.js"
 
 const app = express();
 // dotenv.config();
@@ -25,7 +26,8 @@ app.use(express.urlencoded({ extended: true }));
 //   })
 // );
 
-const allowedOrigins = ["https://plumeriaresort.in", "https://test.plumeriaresort.in"];
+// const allowedOrigins = ["https://plumeriaresort.in", "https://test.plumeriaresort.in"];
+const allowedOrigins = ["http://localhost:5173", "https://test.plumeriaresort.in"];
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -52,12 +54,13 @@ app.use("/", userRoutes);
 app.use("/rooms", roomRoutes);
 app.use("/payments", paymentRoutes);
 app.use("/bookings", bookingStatusCheck);
+app.use("/admin",adminroutes)
 // app.get("/", (req, res) => {
 //   res.send("server is working");
 // });
 
-const PORT=6000;
-// const PORT = 3000;
+// const PORT=6000;
+const PORT = 3000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
