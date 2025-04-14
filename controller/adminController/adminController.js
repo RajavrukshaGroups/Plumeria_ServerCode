@@ -1,147 +1,86 @@
+
 // const Admin = require('../models/adminModel')
 import Admin from "../../Models/adminModels/adminMode.js";
-import RoomAvailability from "../../Models/RoomAvailability.js";
-
-const Adminlogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    console.log(req.body, "Incoming data");
-
-    // Check if admin already exists
-    const AdminEmail = await Admin.findOne({ email });
-    console.log(AdminEmail, "Admin already exists");
-
-    if (!AdminEmail) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Incorrect email ID" });
-    } else if (password !== AdminEmail.password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Incorrect password" });
+import RoomModel from "../../Models/adminModels/roomModels.js";
+import cloudinary from "../../utils/cloudinary.js";
+const Adminlogin =async(req,res)=>{
+    try {
+        const { email, password } = req.body;
+        console.log(req.body, 'Incoming data');
+        // Check if admin already exists
+        const AdminEmail = await Admin.findOne({ email });
+        console.log(AdminEmail, 'Admin already exists');
+        if (!AdminEmail) {
+            return res.status(400).json({ success: false, message: "Incorrect email ID" });
+        }else if(password!==AdminEmail.password){
+            return res.status(400).json({ success: false, message: "Incorrect password" });
+        }
+        console.log('login successful'); 
+        
+        res.status(200).json({success:true,message:"Login Success"})
+        
+    } catch (error) {
+        console.error("Error during login:", error.message);
+        res.status(500).json({ success: false, message: "Server error" });
     }
-    console.log("login successful");
+};
 
-    res.status(200).json({ success: true, message: "Login Success" });
+const getRoomsData =async(req,res)=>{
+ try {
+    const rooms = await Room.find();
+    console.log(rooms,'fetched rooms data');
+    
+    res.status(200).json(rooms);
   } catch (error) {
-    console.error("Error during login:", error.message);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ message: "Error fetching rooms", error });
   }
 };
 
-const GetRoomsData = async (req, res) => {
-  const { roomType, date } = req.query;
-  console.log("roomType", roomType);
-  console.log("date", date);
-  if (!roomType || !date) {
-    return res.status(400).json({ message: "roomtype and date are required" });
-  }
-  try {
-    const availability = await RoomAvailability.findOne({
-      roomType,
-      date: new Date(date),
-    });
-    if (!availability) {
-      return res.json({ availableRooms: 0 });
-    }
-    res.status(200).json({ availableRooms: availability.availableRooms });
-    console.log("available rooms", availability);
-  } catch (error) {
-    console.error("error fetching availability:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
+const saveRoomData =async (req,res)=>{
+    try {
+        console.log(req.body.roomData, 'Incoming data');
+        console.log(JSON.parse(req.body.roomData,'ddddddddd'), 'Parsed data');
+        
+        // Parse the JSON string from the form data
+        const roomData = JSON.parse(req.body.roomData);
+        // console.log(req.files, 'req.files');
+        
+    
+        // Upload images (if any) using express-fileupload.
+        // req.files.images may be a single file or an array.
+        // let imageUrls = [];
+        // if (req.files && req.files.images) {
+        //   let images = req.files.images;
+        //   if (!Array.isArray(images)) {
+        //     images = [images];
+        //   }
+        //   // Loop over each file and upload it to Cloudinary
+        //   for (const image of images) {
+        //     const result = await cloudinary.uploader.upload(image.tempFilePath, {
+        //       folder: "room-images",
+        //     });
+        //     imageUrls.push(result.secure_url);
+        //     console.log(result.secure_url, 'Image URL');
+        //   }
+        // }
+        // // Set the Cloudinary image URLs in the roomData object
+        // roomData.images = imageUrls;
+        // console.log(roomData.images, 'roomData images');
+        
+     
+        // Create and save the Room document in MongoDB
+        const newRoom = new RoomModel(roomData);
+        await newRoom.save();
+    
+        res.status(201).json({ message: "Room created successfully", room: newRoom });
+      } catch (error) {
+        console.error("Error creating room:", error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+}
 
-const RoomUpdatesAvailability = async (req, res) => {
-  const { roomType, date, availableRooms } = req.body;
-
-  if (!roomType || !date || availableRooms === undefined) {
-    return res.status(400).json({ error: "Missing required fields." });
-  }
-  try {
-    const updated = await RoomAvailability.findOneAndUpdate(
-      { roomType, date: new Date(date) },
-      { availableRooms },
-      { upsert: true, new: true, setDefaultsOnInsert: true }
-    );
-
-    return res
-      .status(200)
-      .json({ message: "Availability updated", data: updated });
-  } catch (err) {
-    console.error("error updating availability", err);
-    res.status(500).json({ message: "server error" });
-  }
-};
-
-const ListRoomsAvailable = async (req, res) => {
-  try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 5;
-    const skip = (page - 1) * limit;
-    const [data, totalCount] = await Promise.all([
-      RoomAvailability.find().sort({ date: 1 }).skip(skip).limit(limit),
-      RoomAvailability.countDocuments(),
-    ]);
-    // const allAvailability = await RoomAvailability.find().sort({ date: 1 });
-    res.status(200).json({ data, totalCount });
-  } catch (error) {
-    console.error("error fetching room availability", error);
-    res.status(500).json({ message: "failed to fetch the room availability." });
-  }
-};
-
-const GetEditRoomsInfo = async (req, res) => {
-  try {
-    const item = await RoomAvailability.findById(req.params.id);
-    if (!item) return res.status(404).json({ message: "not found" });
-    res.status(200).json({ data: item });
-  } catch (err) {
-    console.error("failed to get rooms availability", err);
-    res.status(500).json({ message: "server error" });
-  }
-};
-
-const DeleteRoomAvailabilityData = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const deleteRoom = await RoomAvailability.findByIdAndDelete(id);
-    if (!deleteRoom) {
-      return res.status(404).json({ message: "Room availability not found." });
-    }
-    return res
-      .status(200)
-      .json({ message: "Room availability deleted successfully." });
-  } catch (err) {
-    console.error("error deleting the room availability", err);
-    return res.status(500).json({ message: "server error" });
-  }
-};
-
-const FilterRoomAvailability = async (req, res) => {
-  try {
-    const { date, roomType } = req.query;
-
-    let filter = {};
-    if (date) filter.date = new Date(date);
-    if (roomType) filter.roomType = roomType;
-
-    const filteredRooms = await RoomAvailability.find(filter).sort({ date: 1 });
-    res.status(200).json(filteredRooms);
-  } catch (error) {
-    console.error("Error filtering room availability:", error);
-    res.status(500).json({ error: "Server error" });
-  }
-};
-
-export default {
-  Adminlogin,
-  RoomUpdatesAvailability,
-  GetRoomsData,
-  ListRoomsAvailable,
-  GetEditRoomsInfo,
-  DeleteRoomAvailabilityData,
-  FilterRoomAvailability,
-};
+export default{
+    Adminlogin,
+    getRoomsData,
+    saveRoomData
+}

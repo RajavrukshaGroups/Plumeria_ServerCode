@@ -1,12 +1,12 @@
 const roomAvailabilityDetails = [
   {
-    roomType: "Villa Rooms",
-    date: new Date("2025-04-14"),
-    availableRooms: 8,
+    roomType: "Deluxe Rooms",
+    date: new Date("2025-04-05"),
+    availableRooms: 15,
   },
   {
-    roomType: "Deluxe Rooms",
-    date: new Date("2025-04-14"),
+    roomType: "Villa Rooms",
+    date: new Date("2025-04-05"),
     availableRooms: 8,
   },
 ];
