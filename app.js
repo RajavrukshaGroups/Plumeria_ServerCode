@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 // );
 
 // const allowedOrigins = ["https://plumeriaresort.in", "https://test.plumeriaresort.in"];
-const allowedOrigins = ["http://localhost:5173", "https://test.plumeriaresort.in"];
+const allowedOrigins = ["http://localhost:5173", "https://test.plumeriaresort.in","http://localhost:5174"];
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -41,9 +41,9 @@ app.use(cors({
 
 app.use(express.static("public"));
 
-// const MONGO_URL = "mongodb://127.0.0.1:27017/Plumeria";
-const MONGO_URL =
-  "mongodb+srv://enquiry:cWkQzlp42pu8yu7N@cluster0.r9w8y.mongodb.net";
+const MONGO_URL = "mongodb://127.0.0.1:27017/Plumeria";
+// const MONGO_URL =
+//   "mongodb+srv://enquiry:cWkQzlp42pu8yu7N@cluster0.r9w8y.mongodb.net";
 
 mongoose
   .connect(MONGO_URL)
@@ -54,7 +54,7 @@ app.use("/", userRoutes);
 app.use("/rooms", roomRoutes);
 app.use("/payments", paymentRoutes);
 app.use("/bookings", bookingStatusCheck);
-app.use("/admin",adminroutes)
+app.use("/admin",adminroutes);
 // app.get("/", (req, res) => {
 //   res.send("server is working");
 // });
