@@ -1,4 +1,5 @@
 // const Admin = require('../models/adminModel')
+import { error } from "console";
 import Admin from "../../Models/adminModels/adminMode.js";
 import RoomAvailability from "../../Models/RoomAvailability.js";
 
@@ -124,12 +125,22 @@ const FilterRoomAvailability = async (req, res) => {
   try {
     const { date, roomType } = req.query;
 
+    if (!date) {
+      return res.status(400).json({ error: "Please select a date to filter." });
+    }
+
+    console.log("date", date);
+    console.log("roomType", roomType);
+
     let filter = {};
     if (date) filter.date = new Date(date);
-    if (roomType) filter.roomType = roomType;
+    if (roomType && roomType !== "All Types") {
+      filter.roomType = roomType;
+    }
 
     const filteredRooms = await RoomAvailability.find(filter).sort({ date: 1 });
     res.status(200).json(filteredRooms);
+    console.log("filteredRooms", filteredRooms);
   } catch (error) {
     console.error("Error filtering room availability:", error);
     res.status(500).json({ error: "Server error" });
