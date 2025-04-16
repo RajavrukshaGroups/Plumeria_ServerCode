@@ -22,6 +22,7 @@ const bookingSchema = new mongoose.Schema({
       persons: Number,
       adult: Number,
       children: Number,
+      planName: String,
     },
   ],
   totalCost: Number,

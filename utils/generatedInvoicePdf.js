@@ -106,8 +106,8 @@ const generateInvoicePdf = async ({
     const roomTableY = doc.y;
     doc
       .font("Helvetica-Bold")
-      .text("Type", tableStartX, roomTableY)
-      .text("Count", tableStartX + 150, roomTableY)
+      .text("Room Type", tableStartX, roomTableY)
+      .text("Plan", tableStartX + 150, roomTableY)
       .text("Persons", tableStartX + 220, roomTableY)
       .text("Adults", tableStartX + 300, roomTableY)
       .text("Children", tableStartX + 380, roomTableY);
@@ -118,10 +118,11 @@ const generateInvoicePdf = async ({
     selectedRooms.forEach((room) => {
       doc
         .text(room.roomType, tableStartX, currentY)
-        .text(`${room.count || 1}`, tableStartX + 150, currentY)
+        .text(`${room.planName}`, tableStartX + 150, currentY)
         .text(`${room.persons}`, tableStartX + 220, currentY)
         .text(`${room.adults}`, tableStartX + 300, currentY)
         .text(`${room.children}`, tableStartX + 380, currentY);
+      // .text(`${room.planName}`, tableStartX + 380, currentY);
       currentY += 20;
     });
 
