@@ -2,15 +2,14 @@
 import Booking from "../Models/Booking.js";
 import mongoose from "mongoose";
 
-const checkBookingStatus = async (req, res) => {
+const checkBookingStatus = async ( req, res) => {
+
   const { bookingId } = req.params;
-
+  
   console.log("bookings id", bookingId);
-
   //   if (!mongoose.Types.ObjectId.isValid(bookingId)) {
   //     return res.status(400).json({ message: "Invalid Booking ID." });
   //   }
-
   try {
     const booking = await Booking.findOne({ bookingId });
     if (!booking) {
