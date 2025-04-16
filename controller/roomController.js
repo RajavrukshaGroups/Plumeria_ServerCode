@@ -544,7 +544,7 @@ const createBooking = async (req, res) => {
       totalAmount,
     } = req.body;
 
-    console.log("Request body:", req.body);
+    console.log("Request body:selected plam", req.body);
 
     const formatDate = (dateStr) => {
       const date = new Date(dateStr);
@@ -603,15 +603,6 @@ const createBooking = async (req, res) => {
       }
     }
 
-    // ✅ Step 2: Save the booking only after availability check
-    // let bookingId;
-    // let exists = true;
-
-    // while (exists) {
-    //   bookingId = "PLUM" + nanoid(8);
-    //   const existingBooking = await Booking.findOne({ bookingId });
-    //   if (!existingBooking) exists = false;
-    // }
 
     const bookingId = await generateUniqueBookingId();
 
@@ -631,6 +622,7 @@ const createBooking = async (req, res) => {
         persons: room.persons,
         adult: room.adults,
         children: room.children,
+        planName:room.planName,
       })),
       totalCost: totalAmount,
       bookingStatus: "Confirmed",
