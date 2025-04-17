@@ -3,6 +3,7 @@
 // import Admin from "../../Models/adminModels/adminMode.js";
 import RoomModel from "../../Models/adminModels/roomModels.js";
 import cloudinary from "../../utils/cloudinary.js";
+
 const Adminlogin =async(req,res)=>{
     try {
         const { email, password } = req.body;
@@ -185,6 +186,8 @@ const saveRoomData = async (req, res) => {
 
 const getRoomsData =async(req,res)=>{
  try {
+  console.log('Fetching rooms data');
+  
     const rooms = await RoomModel.find();
     console.log(rooms,'fetched rooms data');
     res.status(200).json(rooms);
@@ -294,7 +297,7 @@ const getRoomsData =async(req,res)=>{
 // }
 const editSaveroom = async (req, res) => {
   try {
-    // console.log(req.params.id, 'Incoming data');
+    console.log(req.body.roomData, 'Incoming data');
     const parsedData = JSON.parse(req.body.roomData);
     console.log(parsedData, 'Parsed data');
 
