@@ -2,6 +2,7 @@
 import { error } from "console";
 import Admin from "../../Models/adminModels/adminMode.js";
 import RoomAvailability from "../../Models/RoomAvailability.js";
+import Booking from "../../Models/Booking.js";
 
 const Adminlogin = async (req, res) => {
   try {
@@ -147,6 +148,104 @@ const FilterRoomAvailability = async (req, res) => {
   }
 };
 
+const ViewAllBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({});
+    res.status(200).json({
+      success: true,
+      message: "All booking fetched successfully",
+      data: bookings,
+    });
+  } catch (error) {
+    console.error("error fetching bookings:", error);
+    res.status(500).json({
+      success: false,
+      message: "failed to fetch details",
+      error: error.message,
+    });
+  }
+};
+
+const GetBookingsByCheckInDate = async (req, res) => {
+  try {
+    const { checkInDate } = req.query;
+
+    if (!checkInDate) {
+      return res.status(400).json({
+        success: false,
+        message: "Check-in date is required",
+      });
+    }
+
+    const bookings = await Booking.find({ checkInDate });
+    res.status(200).json({
+      success: true,
+      message: `Bookings found for check-in date:${checkInDate}`,
+      data: bookings,
+    });
+  } catch (error) {
+    console.error("error fetching bookings by check-in date:", error);
+    res.status(500).json({
+      success: false,
+      message: "server error fetching bookings",
+      error: error.message,
+    });
+  }
+};
+
+const CollectUniqueCheckInDate = async (req, res) => {
+  try {
+    const uniqueDates = await Booking.aggregate([
+      {
+        $group: {
+          _id: "$checkInDate",
+        },
+      },
+      {
+        // Convert string "DD-MM-YYYY" to a Date object (YYYY-MM-DD)
+        $addFields: {
+          parsedDate: {
+            $dateFromString: {
+              dateString: {
+                $concat: [
+                  { $substr: ["$_id", 6, 4] }, // YYYY
+                  "-",
+                  { $substr: ["$_id", 3, 2] }, // MM
+                  "-",
+                  { $substr: ["$_id", 0, 2] }, // DD
+                ],
+              },
+              format: "%Y-%m-%d",
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          parsedDate: 1,
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          checkInDate: "$_id",
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: uniqueDates,
+    });
+  } catch (error) {
+    console.error("error collecting check-in dates", error);
+    res.status(500).json({
+      success: false,
+      message: "server error",
+    });
+  }
+};
+
 export default {
   Adminlogin,
   RoomUpdatesAvailability,
@@ -155,4 +254,7 @@ export default {
   GetEditRoomsInfo,
   DeleteRoomAvailabilityData,
   FilterRoomAvailability,
+  ViewAllBookings,
+  GetBookingsByCheckInDate,
+  CollectUniqueCheckInDate,
 };
