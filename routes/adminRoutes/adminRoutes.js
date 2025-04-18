@@ -13,5 +13,14 @@ router.delete(
   adminController.DeleteRoomAvailabilityData
 );
 router.get("/filterroomavailability", adminController.FilterRoomAvailability);
+router.get("/viewallbookings", adminController.ViewAllBookings);
+router.get(
+  "/bookings/by-checkin-date",
+  adminController.GetBookingsByCheckInDate
+);
+router.get(
+  "/bookings/unique-checkin-dates",
+  adminController.CollectUniqueCheckInDate
+);
 
 export default router;

@@ -542,6 +542,7 @@ const createBooking = async (req, res) => {
       advancePayment,
       remainingAmount,
       totalAmount,
+      paymentMethod="cash",
     } = req.body;
 
     console.log("Request body:selected plam", req.body);
@@ -603,7 +604,6 @@ const createBooking = async (req, res) => {
       }
     }
 
-
     const bookingId = await generateUniqueBookingId();
 
     const newBooking = new Booking({
@@ -622,12 +622,12 @@ const createBooking = async (req, res) => {
         persons: room.persons,
         adult: room.adults,
         children: room.children,
-        planName:room.planName,
+        planName: room.planName,
       })),
       totalCost: totalAmount,
       bookingStatus: "Confirmed",
       payment: {
-        method: "Razorpay",
+        method: paymentMethod,
         amountPaid: advancePayment || totalAmount,
         balanceDue: remainingAmount || 0,
       },
