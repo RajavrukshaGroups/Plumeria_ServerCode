@@ -8,6 +8,8 @@ router.post('/adminLogin',adminController.Adminlogin)
   router.get("/roomsdata",adminController.getRoomsData)
   router.post('/rooms',adminController.saveRoomData)
   router.put("/editSaveroom/:id",adminController.editSaveroom)
+  router.delete("/deleteroom/:id", adminController.deleteRoomById);
+
   
   export default router
   
