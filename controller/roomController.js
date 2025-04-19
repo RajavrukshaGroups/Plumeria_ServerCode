@@ -539,10 +539,11 @@ const createBooking = async (req, res) => {
       checkOutDate,
       selectedRooms,
       guestDetails,
+      domainName,
       advancePayment,
       remainingAmount,
       totalAmount,
-      paymentMethod="cash",
+      paymentMethod = "cash",
     } = req.body;
 
     console.log("Request body:selected plam", req.body);
@@ -613,6 +614,7 @@ const createBooking = async (req, res) => {
         email: guestDetails.email,
         phone: guestDetails.phone,
       },
+      domainName:domainName,
       checkInDate: formattedCheckInDate,
       checkOutDate: formattedCheckOutDate,
       totalRooms: selectedRooms.length,

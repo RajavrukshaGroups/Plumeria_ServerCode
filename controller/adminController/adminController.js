@@ -257,57 +257,53 @@ const CollectUniqueCheckInDate = async (req, res) => {
   }
 };
 
-// Example: Express route handler
-// const FilterUniqueCheckInDate = async (req, res) => {
-//   const { date, page = 1, limit = 5 } = req.query;
-//   const skip = (page - 1) * limit;
+const CollectAllUniqueCheckInDates = async (req, res) => {
+  try {
+    const results = await Booking.aggregate([
+      {
+        $group: {
+          _id: "$checkInDate",
+        },
+      },
+      {
+        $addFields: {
+          parsedDate: {
+            $dateFromString: {
+              dateString: {
+                $concat: [
+                  { $substr: ["$_id", 6, 4] }, // YYYY
+                  "-",
+                  { $substr: ["$_id", 3, 2] }, // MM
+                  "-",
+                  { $substr: ["$_id", 0, 2] }, // DD
+                ],
+              },
+              format: "%Y-%m-%d",
+            },
+          },
+        },
+      },
+      { $sort: { parsedDate: 1 } },
+      {
+        $project: {
+          _id: 0,
+          checkInDate: "$_id",
+        },
+      },
+    ]);
 
-//   try {
-//     const matchStage = date
-//       ? {
-//           $match: {
-//             checkInDate: new Date(date), // ensure date format is correct
-//           },
-//         }
-//       : { $match: {} };
-
-//     const aggregation = [
-//       matchStage,
-//       {
-//         $group: {
-//           _id: "$checkInDate",
-//           count: { $sum: 1 },
-//         },
-//       },
-//       { $sort: { _id: -1 } },
-//       { $skip: parseInt(skip) },
-//       { $limit: parseInt(limit) },
-//     ];
-
-//     const countAggregation = [
-//       matchStage,
-//       {
-//         $group: {
-//           _id: "$checkInDate",
-//         },
-//       },
-//       {
-//         $count: "total",
-//       },
-//     ];
-
-//     const [results, countResult] = await Promise.all([
-//       Booking.aggregate(aggregation),
-//       Booking.aggregate(countAggregation),
-//     ]);
-
-//     const total = countResult[0]?.total || 0;
-
-//     res.json({ data: results, total });
-//   } catch (err) {
-//     res.status(500).json({ error: "Failed to fetch unique check-in dates" });
-//   }
-// };
+    res.status(200).json({
+      success: true,
+      data: results,
+    });
+  } catch (error) {
+    console.error("Error fetching all unique check-in dates", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
 
 export default {
   Adminlogin,
@@ -320,5 +316,5 @@ export default {
   ViewAllBookings,
   GetBookingsByCheckInDate,
   CollectUniqueCheckInDate,
-//   FilterUniqueCheckInDate,
+  CollectAllUniqueCheckInDates,
 };
