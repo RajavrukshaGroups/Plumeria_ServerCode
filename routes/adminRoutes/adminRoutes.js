@@ -22,6 +22,9 @@ router.get(
   "/bookings/unique-checkin-dates",
   adminController.CollectUniqueCheckInDate
 );
-// router.get("/filtercheckIndate", adminController.FilterUniqueCheckInDate);
+router.get(
+  "/bookings/filter-checkin-dates",
+  adminController.CollectAllUniqueCheckInDates
+);
 
 export default router;
