@@ -3,6 +3,7 @@
 // import Admin from "../../Models/adminModels/adminMode.js";
 import RoomModel from "../../Models/adminModels/roomModels.js";
 import cloudinary from "../../utils/cloudinary.js";
+import RoomType from '../../Models/adminModels/roomType.js';
 
 const Adminlogin =async(req,res)=>{
     try {
@@ -30,7 +31,7 @@ const saveRoomData = async (req, res) => {
   try {
     console.log(req.body.roomData, 'Incoming data');
     const parsedData = JSON.parse(req.body.roomData);
-    console.log(req.files, 'Parse data');
+    console.log(parsedData.roomInfo.bed, 'Parse data');
 
 
     let imageUrls = [];
@@ -152,9 +153,9 @@ const editSaveroom = async (req, res) => {
       const list = Array.isArray(servicesArray) ? servicesArray : [];
       return {
         WiFi: list.includes("WiFi"),
-        breakfast: list.includes("Breakfast"),
-        spa: list.includes("Spa"),
-        taxesIncluded: list.includes("Taxes Included"),
+        breakfast: list.includes("breakfast"),
+        spa: list.includes("spa"),
+        taxesIncluded: list.includes("taxesIncluded"),
       };
     };
     const formattedPlans = parsedData.plans.map(plan => ({
@@ -214,11 +215,29 @@ export const deleteRoomById = async (req, res) => {
   }
 };
 
+const addRoomType =async(req,res)=>{
+  try {
+    const { name } = req.body;
+    console.log(req.body, 'Incoming data');
+    
+    const newType = new RoomType({ name });
+    await newType.save();
+    res.status(201).json(newType);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+
+}
+  // Get all room types
+
+
+
 
 export default{
   Adminlogin,
   getRoomsData,
   saveRoomData,
   editSaveroom,
-  deleteRoomById
+  deleteRoomById,
+  addRoomType
 }
