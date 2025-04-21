@@ -10,7 +10,7 @@ const roomSchema = new mongoose.Schema({
   capacity: {
     maxPersons: { type: Number },
     maxAdults: { type: Number },
-    maxChildren: { type: Number },~
+    maxChildren: { type: Number },
   },
   roomInfo: {
     description: { type: String,  },

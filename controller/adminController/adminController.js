@@ -229,7 +229,57 @@ const addRoomType =async(req,res)=>{
 
 }
   // Get all room types
+const getRoomType =async(req,res)=>{
+  try {
+    console.log('Fetching room types');
+    const roomTypes = await RoomType.find();
+    console.log(roomTypes, 'Fetched room types');
+    res.status(200).json(roomTypes);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
 
+const updateRoomType = async (req, res) => {
+  try {
+    console.log('Updating room type');
+    
+    const { id } = req.params;
+    const { name } = req.body;
+
+    const updatedRoom = await RoomType.findByIdAndUpdate(
+      id,
+      { name },
+      { new: true } // Return the updated document
+    );
+    
+
+    if (!updatedRoom) {
+      return res.status(404).json({ message: "Room type not found." });
+    }
+    console.log('Updated room:', updatedRoom);
+    res.json(updatedRoom);
+  } catch (error) {
+    console.error("Error updating room type:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+const deleteRoomType = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedRoom = await RoomType.findByIdAndDelete(id);
+
+    if (!deletedRoom) {
+      return res.status(404).json({ message: "Room type not found." });
+    }
+
+    res.json({ message: "Room type deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting room type:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
 
 
 
@@ -239,5 +289,8 @@ export default{
   saveRoomData,
   editSaveroom,
   deleteRoomById,
-  addRoomType
+  addRoomType,
+  getRoomType,
+  updateRoomType,
+  deleteRoomType
 }
