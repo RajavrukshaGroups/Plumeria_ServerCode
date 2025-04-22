@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 import { nanoid } from "nanoid";
 import Booking from "../Models/Booking.js";
-import Room from "../Models/Room.js";
+// import Room from "../Models/Room.js";
+import Room from "../Models/adminModels/roomModels.js";
 import RoomAvailability from "../Models/RoomAvailability.js";
 import sendBookingEmails from "../utils/sendBookingEmail.js";
+
 
 const roomDetails = async (req, res) => {
   try {
