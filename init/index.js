@@ -19,7 +19,8 @@ const main = async () => {
     // await Booking.deleteMany({});
     await Listing.insertMany(initData);
     // await RoomAvailability.deleteMany({});
-    // await RoomAvailability.insertMany(roomAvailabilityData);
+    await RoomAvailability.insertMany(roomAvailabilityData);
+    // await Admin.insertMany(adminLogs);
     // await Booking.insertMany(bookingsData);
     console.log("Database initialized with room data.");
 

@@ -541,12 +541,14 @@ const createBooking = async (req, res) => {
       checkOutDate,
       selectedRooms,
       guestDetails,
+      domainName,
       advancePayment,
       remainingAmount,
       totalAmount,
+      paymentMethod = "cash",
     } = req.body;
 
-    console.log("Request body:", req.body);
+    console.log("Request body:selected plam", req.body);
 
     const formatDate = (dateStr) => {
       const date = new Date(dateStr);
@@ -605,16 +607,6 @@ const createBooking = async (req, res) => {
       }
     }
 
-    // ✅ Step 2: Save the booking only after availability check
-    // let bookingId;
-    // let exists = true;
-
-    // while (exists) {
-    //   bookingId = "PLUM" + nanoid(8);
-    //   const existingBooking = await Booking.findOne({ bookingId });
-    //   if (!existingBooking) exists = false;
-    // }
-
     const bookingId = await generateUniqueBookingId();
 
     const newBooking = new Booking({
@@ -624,6 +616,7 @@ const createBooking = async (req, res) => {
         email: guestDetails.email,
         phone: guestDetails.phone,
       },
+      domainName:domainName,
       checkInDate: formattedCheckInDate,
       checkOutDate: formattedCheckOutDate,
       totalRooms: selectedRooms.length,
@@ -633,11 +626,12 @@ const createBooking = async (req, res) => {
         persons: room.persons,
         adult: room.adults,
         children: room.children,
+        planName: room.planName,
       })),
       totalCost: totalAmount,
       bookingStatus: "Confirmed",
       payment: {
-        method: "Razorpay",
+        method: paymentMethod,
         amountPaid: advancePayment || totalAmount,
         balanceDue: remainingAmount || 0,
       },
