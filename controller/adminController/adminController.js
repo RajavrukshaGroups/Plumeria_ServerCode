@@ -579,6 +579,42 @@ const CollectAllUniqueCheckInDates = async (req, res) => {
   }
 };
 
+const GetIndividualBookingData = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+    console.log("bookingid", bookingId);
+
+    if (!bookingId) {
+      return res.status(400).json({
+        success: false,
+        message: "Booking ID is required",
+      });
+    }
+
+    const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Booking details fetched successfully",
+      data: booking,
+    });
+  } catch (error) {
+    console.error("Error fetching booking:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch booking",
+      error: error.message,
+    });
+  }
+};
+
 export default {
   Adminlogin,
   GetRoomsData,
@@ -599,4 +635,5 @@ export default {
   CollectUniqueCheckInDate,
   CollectAllUniqueCheckInDates,
   getRoomsData,
+  GetIndividualBookingData,
 };
