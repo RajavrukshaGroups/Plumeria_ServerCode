@@ -37,5 +37,6 @@ router.put("/updateroomtype/:id", adminController.updateRoomType);
 router.delete("/deleteroomtype/:id", adminController.deleteRoomType);
 router.get("/checkroomsavailability", adminController.GetRoomsData);
 router.get("/indbookingId/:id", adminController.GetIndividualBookingData);
+router.put("/updatebookings/:id", adminController.UpdateBookingDetails);
 
 export default router;
