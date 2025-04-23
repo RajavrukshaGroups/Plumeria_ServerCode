@@ -615,6 +615,36 @@ const GetIndividualBookingData = async (req, res) => {
   }
 };
 
+const UpdateBookingDetails = async (req, res) => {
+  const { id } = req.params;
+  const updatedData = req.body;
+
+  try {
+    const updatedBooking = await Booking.findByIdAndUpdate(id, updatedData, {
+      new: true,
+      runValidators: true,
+    });
+    if (!updatedBooking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Bookings updated successfully",
+      data: updatedBooking,
+    });
+  } catch (error) {
+    console.error("update booking error:", error);
+    res.status(500).json({
+      success: false,
+      message: "an error occurred while updating the booking",
+    });
+  }
+};
+
 export default {
   Adminlogin,
   GetRoomsData,
@@ -636,4 +666,5 @@ export default {
   CollectAllUniqueCheckInDates,
   getRoomsData,
   GetIndividualBookingData,
+  UpdateBookingDetails,
 };
