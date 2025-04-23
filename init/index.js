@@ -7,8 +7,8 @@ import RoomAvailability from "../Models/RoomAvailability.js";
 import Room from "../Models/Room.js";
 import roomAvailabilityData from "./roomAvailability.js";
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/plumeria";
-// const mongo_URL="mongodb+srv://enquiry:cWkQzlp42pu8yu7N@cluster0.r9w8y.mongodb.net"
+// const MONGO_URL = "mongodb://127.0.0.1:27017/plumeria";
+const MONGO_URL="mongodb+srv://enquiry:cWkQzlp42pu8yu7N@cluster0.r9w8y.mongodb.net"
 
 const main = async () => {
   try {
