@@ -8,6 +8,7 @@ import { count, error } from "console";
 import Admin from "../../Models/adminModels/adminMode.js";
 import RoomAvailability from "../../Models/RoomAvailability.js";
 import Booking from "../../Models/Booking.js";
+import Room from "../../Models/Room.js";
 
 const Adminlogin = async (req, res) => {
   try {
@@ -619,6 +620,7 @@ const UpdateBookingDetails = async (req, res) => {
   const { id } = req.params;
   const updatedData = req.body;
 
+  console.log("updated data", updatedData);
   try {
     const updatedBooking = await Booking.findByIdAndUpdate(id, updatedData, {
       new: true,
@@ -644,6 +646,115 @@ const UpdateBookingDetails = async (req, res) => {
     });
   }
 };
+
+// const UpdateBookingDetails = async (req, res) => {
+//   const formatDate = (dateStr) => {
+//     const date = new Date(dateStr);
+//     const day = String(date.getDate()).padStart(2, "0");
+//     const month = String(date.getMonth() + 1).padStart(2, "0");
+//     const year = date.getFullYear();
+//     return `${day}-${month}-${year}`;
+//   };
+//   const getUTCDateOnly = (date) => {
+//     return new Date(
+//       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+//     );
+//   };
+
+//   const { id } = req.params;
+//   const updatedData = req.body;
+
+//   try {
+//     const existingBooking = await Booking.findById(id);
+//     if (!existingBooking) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Booking not found",
+//       });
+//     }
+//     const checkInDate = new Date(updatedData.checkInDate);
+//     const checkOutDate = new Date(updatedData.checkOutDate);
+
+//     for (
+//       let d = new Date(checkInDate);
+//       d < checkOutDate;
+//       d.setDate(d.getDate() + 1)
+//     ) {
+//       const dateOnly = getUTCDateOnly(d);
+//       for (const roomType of updatedData.roomTypes) {
+//         const roomData = await RoomModel.findOne({ roomType });
+//         if (!roomData) {
+//           return res.status(400).json({
+//             success: false,
+//             message: `room type "${roomType}" not found.`,
+//           });
+//         }
+
+//         const existingAvailability = await RoomAvailability.findOne({
+//           roomType,
+//           date: dateOnly,
+//         });
+
+//         const availableRooms = existingAvailability
+//           ? existingAvailability.availableRooms
+//           : roomData.maxRoomsAvailable;
+
+//         if (availableRooms < updatedData.totalRooms) {
+//           return res.status(400).json({
+//             success: false,
+//             message: `not enough "${roomType}" rooms available on ${formatDate(
+//               dateOnly
+//             )}`,
+//           });
+//         }
+//       }
+//     }
+
+//     for (
+//       let d = new Date(checkInDate);
+//       d < checkOutDate;
+//       d.setDate(d.getDate() + 1)
+//     ) {
+//       const dateOnly = getUTCDateOnly(d);
+//       for (const roomType of updatedData.roomTypes) {
+//         const roomData = await RoomModel.findOne({ roomType });
+//         const maxRoomsAvailable = roomData.maxRoomsAvailable;
+//         const roomCount = updatedData.totalRooms || 1;
+
+//         const existingAvailability = await RoomAvailability.findOne({
+//           roomType,
+//           date: dateOnly,
+//         });
+
+//         const updatedAvailability = existingAvailability
+//           ? Math.max(existingAvailability.availableRooms - roomCount, 0)
+//           : Math.max(maxRoomsAvailable - roomCount, 0);
+
+//         await RoomAvailability.findOneAndUpdate(
+//           { roomType, date: dateOnly },
+//           { availableRooms: updatedAvailability },
+//           { upsert: true, new: true }
+//         );
+//       }
+//     }
+//     const updatedBooking = await Booking.findByIdAndUpdate(id, updatedData, {
+//       new: true,
+//       runValidators: true,
+//     });
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Booking updated successfully",
+//       data: updatedBooking,
+//     });
+//   } catch (error) {
+//     console.error("update booking error:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "an occur occurred while updating the booking",
+//     });
+//   }
+// };
 
 export default {
   Adminlogin,
