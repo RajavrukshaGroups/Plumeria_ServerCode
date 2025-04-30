@@ -63,12 +63,9 @@ app.use("/payments", paymentRoutes);
 app.use("/bookings", bookingStatusCheck);
 app.use("/admin", adminroutes);
 app.use("/bulkmail", mailPilotRoutes);
-// app.get("/", (req, res) => {
-//   res.send("server is working");
-// });
 
-// const PORT = 6000;
-const PORT = 3000;
+const PORT = 6000;
+// const PORT = 3000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
