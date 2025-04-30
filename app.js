@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const allowedOrigins = [
-  "https://plumeriaresort.in",
+  "https://admin.plumeriaresort.in",
   "https://test.plumeriaresort.in",
 ];
 
