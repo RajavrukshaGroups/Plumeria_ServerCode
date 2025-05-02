@@ -19,12 +19,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const allowedOrigins = [
-  "https://plumeriaresort.in",
-  "https://test.plumeriaresort.in",
-];
+// const allowedOrigins = [
+//   "https://plumeriaresort.in",
+//   "https://test.plumeriaresort.in",
+// ];
 
-// const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
+const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
 app.use(
   cors({
     origin: function (origin, callback) {
