@@ -6,7 +6,6 @@ import Room from "../Models/adminModels/roomModels.js";
 import RoomAvailability from "../Models/RoomAvailability.js";
 import sendBookingEmails from "../utils/sendBookingEmail.js";
 
-
 const roomDetails = async (req, res) => {
   try {
     const rooms = await Room.find();
@@ -616,7 +615,7 @@ const createBooking = async (req, res) => {
         email: guestDetails.email,
         phone: guestDetails.phone,
       },
-      domainName:domainName,
+      domainName: domainName,
       checkInDate: formattedCheckInDate,
       checkOutDate: formattedCheckOutDate,
       totalRooms: selectedRooms.length,
@@ -627,6 +626,7 @@ const createBooking = async (req, res) => {
         adult: room.adults,
         children: room.children,
         planName: room.planName,
+        duration: room.duration,
       })),
       totalCost: totalAmount,
       bookingStatus: "Confirmed",

@@ -74,7 +74,7 @@ const sendBookingEmails = async ({
               r.persons
             }, Adults: ${r.adults}, Children: ${r.children}, Plan: ${
               r.planName
-            }</li>`
+            }, Stay Duration:${r.duration} night/s</li>`
         )
         .join("")}
     </ul>
@@ -145,11 +145,11 @@ const sendBookingEmails = async ({
       ${selectedRooms
         .map(
           (r) =>
-            `<li><strong>${r.roomType}:</strong> ${
-              r.count || 1
-            } room(s), Persons: ${r.persons}, Adults: ${r.adults}, Children: ${
-              r.children
-            }, Plan: ${r.planName}</li>`
+            `<li>${r.roomType}: ${r.count || 1} room(s), Persons: ${
+              r.persons
+            }, Adults: ${r.adults}, Children: ${r.children}, Plan: ${
+              r.planName
+            }, Stay Duration:${r.duration} night/s</li>`
         )
         .join("")}
     </ul>
