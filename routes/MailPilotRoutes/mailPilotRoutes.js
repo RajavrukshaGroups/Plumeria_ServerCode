@@ -3,7 +3,9 @@ import mailPilotController from "../../controller/mailPilotController/mailPilot.
 
 const router = express.Router();
 
-router.post("/sendBulkMails", mailPilotController.sendBulkMail);
-router.post("/sendgrid-webhook", mailPilotController.updateStatus);
+router.post(
+  "/sendBulkMails",
+  mailPilotController.sendBulkMail
+);
 
 export default router;
