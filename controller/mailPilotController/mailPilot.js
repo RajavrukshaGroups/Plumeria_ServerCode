@@ -6,6 +6,13 @@ const sendBulkMail = async (req, res) => {
     const { subject, message, to, fromEmail } = req.body;
     const attachment = req.files?.attachment;
 
+    console.log("attachment info:", {
+      name: attachment?.name,
+      size: attachment?.size,
+      mimetype: attachment?.mimetype,
+      tempFilePath: attachment?.tempFilePath,
+    });
+
     if (!subject || !message || !to || !Array.isArray(to) || to.length === 0) {
       return res.status(400).json({
         success: false,
@@ -49,13 +56,29 @@ const sendBulkMail = async (req, res) => {
     }
 
     // Prepare attachment if exists
+    // const attachments = [];
+    // if (attachment) {
+    //   attachments.push({
+    //     filename: attachment.name,
+    //     content: attachment.data,
+    //   });
+    // }
     const attachments = [];
     if (attachment) {
+      const fileContent =
+        attachment.data.length > 0
+          ? attachment.data
+          : fs.readFileSync(attachment.tempFilePath);
+
       attachments.push({
-        filename: attachment.name,
-        content: attachment.data,
+        fileName: attachment.name,
+        content: fileContent,
+        contentType: attachment.mimetype,
+        encoding: "base64",
       });
     }
+
+    console.log("attachments", attachments);
 
     // Send emails individually
     const results = await Promise.all(
@@ -83,6 +106,9 @@ const sendBulkMail = async (req, res) => {
                     </footer>
                   </div>`,
             attachments,
+            headers: {
+              "Content-Transfer-Encoding": "base64",
+            },
           });
           return { email: recipient, status: "success" };
         } catch (error) {
@@ -90,6 +116,10 @@ const sendBulkMail = async (req, res) => {
         }
       })
     );
+
+    if (attachment?.tempFilePath) {
+      fs.unlinkSync(attachment.tempFilePath);
+    }
 
     const failedEmails = results.filter((result) => result.status === "failed");
     if (failedEmails.length > 0) {
@@ -106,6 +136,9 @@ const sendBulkMail = async (req, res) => {
       results,
     });
   } catch (err) {
+    if (req.files?.attachment?.tempFilePath) {
+      fs.unlinkSync(req.files.attachment.tempFilePath);
+    }
     console.error("Error in sendBulkMail:", err);
     return res.status(500).json({
       success: false,
