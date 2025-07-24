@@ -19,9 +19,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// const allowedOrigins = ["https://admin.plumeriaresort.in","https://test.plumeriaresort.in"];
+const allowedOrigins = [
+  "https://admin.plumeriaresort.in",
+  "https://test.plumeriaresort.in",
+];
 
-const allowedOrigins = ["http://localhost:5173"];
+// const allowedOrigins = ["http://localhost:5173"];
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -61,8 +64,8 @@ app.use("/bookings", bookingStatusCheck);
 app.use("/admin", adminroutes);
 app.use("/bulkmail", mailPilotRoutes);
 
-// const PORT = 6000;
-const PORT = 3000;
+const PORT = 6000;
+// const PORT = 3000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
