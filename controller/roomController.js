@@ -5,6 +5,7 @@ import Booking from "../Models/Booking.js";
 import Room from "../Models/adminModels/roomModels.js";
 import RoomAvailability from "../Models/RoomAvailability.js";
 import sendBookingEmails from "../utils/sendBookingEmail.js";
+import numberToWords from "number-to-words";
 
 const roomDetails = async (req, res) => {
   try {
@@ -614,6 +615,10 @@ const createBooking = async (req, res) => {
       contactInfo: {
         email: guestDetails.email,
         phone: guestDetails.phone,
+        customerAddress: guestDetails.customerAddress,
+        customerPanNumber: guestDetails.customerPanNumber,
+        customerAadharNumber: guestDetails.customerAadharNumber,
+        gstNumber: guestDetails.gstNumber,
       },
       domainName: domainName,
       checkInDate: formattedCheckInDate,
@@ -681,14 +686,33 @@ const createBooking = async (req, res) => {
     }
 
     await sendBookingEmails({
-      bookingId,
-      guestDetails,
-      selectedRooms,
-      formattedCheckInDate,
-      formattedCheckOutDate,
-      totalAmount,
-      advancePayment,
-      remainingAmount,
+      bookingId: newBooking.bookingId,
+      guestDetails: {
+        firstName: newBooking.customerName.split(" ")[0],
+        lastName: newBooking.customerName.split(" ").slice(1).join(" "),
+        email: newBooking.contactInfo.email,
+        phone: newBooking.contactInfo.phone,
+        customerAddress: newBooking.contactInfo.customerAddress,
+        customerPanNumber: newBooking.contactInfo.customerPanNumber,
+        customerAadharNumber: newBooking.contactInfo.customerAadharNumber,
+        gstNumber: newBooking.contactInfo.gstNumber,
+        specialRequests: newBooking.specialRequests.join(", "),
+      },
+      selectedRooms: newBooking.totalGuests.map((guest) => ({
+        roomType: guest.roomType,
+        planName: guest.planName,
+        persons: guest.persons,
+        adults: guest.adult,
+        children: guest.children,
+        duration: guest.duration,
+        pricePerDay: newBooking.totalCost / guest.duration,
+      })),
+      formattedCheckInDate: newBooking.checkInDate,
+      formattedCheckOutDate: newBooking.checkOutDate,
+      totalAmount: newBooking.totalCost,
+      advancePayment: newBooking.payment.amountPaid,
+      remainingAmount: newBooking.payment.balanceDue,
+      amountInWords: numberToWords.toWords(newBooking.totalCost).toUpperCase(),
     });
 
     return res.status(201).json({
@@ -702,4 +726,55 @@ const createBooking = async (req, res) => {
   }
 };
 
-export default { roomDetails, checkRoomsAvailability, createBooking };
+// Add this near your other routes
+const viewReceipt = async (req, res) => {
+  try {
+    const booking = await Booking.findOne({ bookingId: req.params.bookingId });
+    if (!booking) {
+      return res.status(404).send("Booking not found");
+    }
+
+    console.log("guest details", booking);
+
+    res.render("receipt", {
+      bookingId: booking.bookingId,
+      guestDetails: {
+        firstName: booking.customerName.split(" ")[0],
+        lastName: booking.customerName.split(" ").slice(1).join(" "),
+        email: booking.contactInfo.email,
+        phone: booking.contactInfo.phone,
+        customerAddress: booking.contactInfo.customerAddress,
+        customerPanNumber: booking.contactInfo.customerPanNumber,
+        customerAadharNumber: booking.contactInfo.customerAadharNumber,
+        gstNumber: booking.contactInfo.gstNumber,
+        specialRequests: booking.specialRequests.join(", "),
+      },
+      selectedRooms: booking.totalGuests.map((guest) => ({
+        roomType: guest.roomType,
+        planName: guest.planName,
+        persons: guest.persons,
+        adults: guest.adult,
+        children: guest.children,
+        duration: guest.duration,
+        pricePerDay: booking.totalCost / guest.duration,
+      })),
+      formattedCheckInDate: booking.checkInDate,
+      formattedCheckOutDate: booking.checkOutDate,
+      totalAmount: booking.totalCost,
+      advancePayment: booking.payment.amountPaid,
+      remainingAmount: booking.payment.balanceDue,
+      amountInWords: numberToWords.toWords(booking.totalCost).toUpperCase(),
+      resortEmail: process.env.PLUMERIA_RESORT_MAIL,
+    });
+  } catch (error) {
+    console.error("Error rendering receipt:", error);
+    res.status(500).send("Error generating receipt");
+  }
+};
+
+export default {
+  roomDetails,
+  checkRoomsAvailability,
+  createBooking,
+  viewReceipt,
+};

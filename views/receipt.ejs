@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tax Invoice - <%= bookingId %></title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        padding: 0;
+        margin: 0;
+      }
+
+      .invoice-box {
+        width: 100%;
+        max-width: 800px;
+        margin: auto;
+        padding: 10px 20px;
+        border: 1px solid #000;
+      }
+
+      .title {
+        background-color: #a07c1f;
+        color: white;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        padding: 4px;
+      }
+
+      .flex-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .logo {
+        width: 80px;
+        margin-top: 5px;
+      }
+
+      .section {
+        margin-top: 8px;
+        margin-bottom: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 6px;
+      }
+
+      th,
+      td {
+        border: 1px solid black;
+        padding: 4px;
+        font-size: 12px;
+        text-align: center;
+      }
+
+      .no-border {
+        border: none;
+      }
+
+      .terms td {
+        font-size: 10px;
+        padding: 2px 4px;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 12px;
+        font-size: 11px;
+      }
+
+      /* Signature styles */
+      .signature-block {
+        display: flex;
+        justify-content: end;
+        margin-top: 40px;
+        gap: 20px;
+      }
+
+      .signature {
+        width: 45%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* .line-only {
+        width: 100%;
+        border-top: 1px solid black;
+        height: 10px;
+      } */
+
+      .line-with-image {
+        width: 100%;
+        /* border-top: 1px solid black; */
+        height: 10px;
+        position: relative;
+      }
+
+      .sign-img {
+        height: 40px;
+        object-fit: contain;
+        position: absolute;
+        top: -42px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .label {
+        /* margin-top: 0px; */
+        font-size: 12px;
+      }
+
+      @media print {
+        body {
+          margin: 0;
+        }
+
+        .invoice-box {
+          border: 1px solid black;
+          box-sizing: border-box;
+          width: 100%;
+          margin: 0;
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="invoice-box">
+      <div class="title">Tax Invoice</div>
+
+      <div class="flex-container">
+        <div style="width: 75%">
+          <strong>Trade Name:</strong> Rajavruksha Realtors Pvt Ltd<br />
+          <strong>Hotel Name:</strong> Plumeria Resort<br />
+          Address: Near Kaveri Nisarga Dhama,<br />
+          Kushalnagar, Coorg - 571234<br />
+          Email ID: plumeriaresort92@gmail.com<br />
+          Phone No: 6366930172<br />
+          GSTIN: 29AAMCR1943C1ZB
+        </div>
+        <div>
+          <img
+            src="https://res.cloudinary.com/daoulitkw/image/upload/v1753785205/receipt_logo2_kjy9g0.jpg"
+            class="logo"
+          />
+        </div>
+      </div>
+
+      <div class="section">
+        <table>
+          <tr>
+            <td colspan="2">
+              <strong>Billing To:</strong><br />
+              Name: <%= guestDetails.firstName %> <%= guestDetails.lastName
+              %><br />
+              Address: <%= guestDetails.customerAddress %><br />
+              Phone: <%= guestDetails.phone %>
+            </td>
+            <td>
+              Date: <%= formattedCheckInDate %><br />
+              Bill No.: <%= bookingId %><br />
+              <!-- Aadhar No.: <%= guestDetails.customerAadharNumber || "N/A" %>  -->
+              <% if(guestDetails.customerAadharNumber) { %>
+              <div>Aadhar No.: <%= guestDetails.customerAadharNumber %></div>
+              <%} %> <% if (guestDetails.customerPanNumber) { %>
+              <div>PAN No.: <%= guestDetails.customerPanNumber %></div>
+              <% } %> <% if (guestDetails.gstNumber) { %>
+              <div>GST No.: <%= guestDetails.gstNumber %></div>
+              <% } %>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Room Type</th>
+            <th>Name</th>
+            <th>Check in</th>
+            <th>Check out</th>
+            <th>No. of Days</th>
+            <!-- <th>Price / Day</th>
+            <th>Amount</th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <% selectedRooms.forEach((room, index) => { %>
+          <tr>
+            <!-- <td><%= room.roomNumber || "-" %></td> -->
+            <td>
+              <%= room.roomType|| "-" %> (<%= (room.planName).toLowerCase() %>)
+            </td>
+            <td><%= guestDetails.firstName %> <%= guestDetails.lastName %></td>
+            <td><%= formattedCheckInDate %></td>
+            <td><%= formattedCheckOutDate %></td>
+            <td><%= room.duration %></td>
+            <!-- <td>₹<%= (room.pricePerDay/room.duration).toFixed(2) %></td>
+            <td>₹<%= (room.pricePerDay).toFixed(2) %></td> -->
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+
+      <table class="terms">
+        <tr>
+          <td colspan="5" class="no-border">
+            <strong>Terms and Conditions:</strong><br />
+            1. Advance Payments – Any advance payments made are adjusted in the
+            final bill.<br />
+            2. Cancellation Policy – Refunds (if any) are subject to the
+            resort’s cancellation policy.<br />
+            3. Invoice Validity – This invoice is valid as per statutory
+            compliance and can be used for business reimbursement claims if
+            applicable.
+          </td>
+          <td colspan="2">
+            <!-- SubTotal: ₹<%= totalAmount.toFixed(2) %> -->
+            <br />
+            <!-- Tax Rate: 12%<br /> -->
+            <!-- Tax Value: ₹<%= (totalAmount * 0.12).toFixed(2) %><br /> -->
+            <!-- <strong>Total: ₹<%= (totalAmount * 1.12).toFixed(2) %></strong> -->
+            <strong>Total: ₹<%= (totalAmount).toFixed(2) %></strong><br />
+            <!-- <% if(advancePayment) { %>
+            <strong>Amount Paid: ₹<%= (advancePayment).toFixed(2) %></strong>
+            <%} %><br />
+            <% if(remainingAmount) { %>
+            <strong
+              >Remaining Amount: ₹<%= (remainingAmount).toFixed(2) %></strong
+            >
+            <%} %> -->
+            <strong>Amount Paid: ₹<%= (advancePayment).toFixed(2) %></strong
+            ><br />
+            <strong
+              >Remaining Amount: ₹<%= (remainingAmount).toFixed(2) %></strong
+            ><br />
+          </td>
+        </tr>
+      </table>
+
+      <div class="section">
+        <strong>TOTAL INVOICE AMOUNT IN WORDS:</strong><br />
+        RUPEES <%= amountInWords %> ONLY
+      </div>
+
+      <div class="footer">
+        *Please Deposit your Key card to the Receptionists*<br /><br />
+
+        <!-- <div class="signature-block">
+          <div class="signature">
+            <div class="line-with-image">
+              <img
+                src="https://res.cloudinary.com/daoulitkw/image/upload/v1753785357/resort_sign_eddu65.webp"
+                class="sign-img"
+                alt="Cashier Signature"
+              />
+            </div>
+            <div class="label">Cashier Signature</div>
+          </div>
+        </div> -->
+
+        <table style="width: 100%; margin-top: 40px">
+          <tr>
+            <td style="text-align: center; padding-top: 10px">
+              <img
+                src="https://res.cloudinary.com/daoulitkw/image/upload/v1753785357/resort_sign_eddu65.webp"
+                alt="Cashier Signature"
+                style="height: 40px; display: block; margin: 0 auto"
+              /><br />
+              <span style="font-size: 12px">Cashier Signature</span>
+            </td>
+          </tr>
+        </table>
+
+        <p style="margin-top: 12px">
+          *THANK YOU FOR YOUR VISIT, PLEASE VISIT US AGAIN !!!*
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

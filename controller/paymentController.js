@@ -8,10 +8,10 @@ dotenv.config();
 const router = express.Router();
 
 const razorpay = new Razorpay({
-  // key_id: process.env.RAZORPAY_TEST_KEY_ID,
-  // key_secret: process.env.RAZORPAY_TEST_KEY_SECRET,
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
+  key_id: process.env.RAZORPAY_TEST_KEY_ID,
+  key_secret: process.env.RAZORPAY_TEST_KEY_SECRET,
+  // key_id: process.env.RAZORPAY_KEY_ID,
+  // key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
 const createPayment = async (req, res) => {
@@ -44,8 +44,8 @@ const verifyPayment = async (req, res) => {
 
     const hmac = crypto.createHmac(
       "sha256",
-      // process.env.RAZORPAY_TEST_KEY_SECRET
-      process.env.RAZORPAY_KEY_SECRET
+      process.env.RAZORPAY_TEST_KEY_SECRET
+      // process.env.RAZORPAY_KEY_SECRET
     );
     hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
     const generated_signature = hmac.digest("hex");

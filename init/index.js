@@ -16,7 +16,7 @@ const main = async () => {
     console.log("Connected to database");
 
     // await Listing.deleteMany({});
-    // await Booking.deleteMany({});
+    await Booking.deleteMany({});
     // await Listing.insertMany(initData);
     await RoomAvailability.deleteMany({});
     // await RoomAvailability.insertMany(roomAvailabilityData);

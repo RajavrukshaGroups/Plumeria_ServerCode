@@ -415,6 +415,7 @@ const ViewAllBookings = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const totalBookings = await Booking.countDocuments();
+    console.log("totalbookings", totalBookings);
 
     const bookings = await Booking.find({})
       .sort({ createdAt: -1 })

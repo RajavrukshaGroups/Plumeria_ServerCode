@@ -1,6 +1,8 @@
 import "dotenv/config";
 import express from "express";
 import mongoose, { mongo } from "mongoose";
+import path from "path";
+import { fileURLToPath } from "url";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import cors from "cors";
@@ -16,15 +18,25 @@ import fileUpload from "express-fileupload";
 
 const app = express();
 // dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const allowedOrigins = [
-  "https://admin.plumeriaresort.in",
-  "https://test.plumeriaresort.in",
-];
+// const allowedOrigins = [
+//   "https://admin.plumeriaresort.in",
+//   "https://test.plumeriaresort.in",
+// ];
 
 // const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = ["http://localhost:5175", "http://localhost:5174"];
+
 app.use(
   cors({
     origin: function (origin, callback) {
