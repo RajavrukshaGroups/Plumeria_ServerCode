@@ -14,6 +14,7 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import bookingStatusCheck from "./routes/bookingStatusRoutes.js";
 import adminroutes from "./routes/adminRoutes/adminRoutes.js";
 import mailPilotRoutes from "./routes/MailPilotRoutes/mailPilotRoutes.js";
+import digitalEliteRoutes from "./routes/digitalEliteRoutes/digitalEliteRoutes.js";
 import fileUpload from "express-fileupload";
 
 const app = express();
@@ -29,13 +30,13 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const allowedOrigins = [
-  "https://admin.plumeriaresort.in",
-  "https://test.plumeriaresort.in",
-];
+// const allowedOrigins = [
+//   "https://admin.plumeriaresort.in",
+//   "https://test.plumeriaresort.in",
+// ];
 
 // const allowedOrigins = ["http://localhost:5173"];
-// const allowedOrigins = ["http://localhost:5175", "http://localhost:5174"];
+const allowedOrigins = ["http://localhost:5175", "http://localhost:5174"];
 
 app.use(
   cors({
@@ -75,6 +76,7 @@ app.use("/payments", paymentRoutes);
 app.use("/bookings", bookingStatusCheck);
 app.use("/admin", adminroutes);
 app.use("/bulkmail", mailPilotRoutes);
+app.use("/digitaleliteservice", digitalEliteRoutes);
 
 const PORT = 6000;
 // const PORT = 3000;
