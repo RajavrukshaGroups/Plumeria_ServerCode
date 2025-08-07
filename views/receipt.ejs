@@ -226,24 +226,24 @@
             applicable.
           </td>
           <td colspan="2">
-            <!-- SubTotal: ₹<%= totalAmount.toFixed(2) %> -->
-            <br />
-            <!-- Tax Rate: 12%<br /> -->
-            <!-- Tax Value: ₹<%= (totalAmount * 0.12).toFixed(2) %><br /> -->
-            <!-- <strong>Total: ₹<%= (totalAmount * 1.12).toFixed(2) %></strong> -->
-            <strong>Total: ₹<%= (totalAmount).toFixed(2) %></strong><br />
-            <!-- <% if(advancePayment) { %>
-            <strong>Amount Paid: ₹<%= (advancePayment).toFixed(2) %></strong>
-            <%} %><br />
-            <% if(remainingAmount) { %>
-            <strong
-              >Remaining Amount: ₹<%= (remainingAmount).toFixed(2) %></strong
-            >
-            <%} %> -->
-            <strong>Amount Paid: ₹<%= (advancePayment).toFixed(2) %></strong
+            <strong>Subtotal: ₹<%= totalAmount.toFixed(2) %></strong><br />
+
+            <% if (totalAmount > 7000) { %>
+            <strong>GST (18%): ₹<%= gstAmount.toFixed(2) %></strong><br />
+            <% } else if (totalAmount > 0) { %>
+            <strong>GST (12%): ₹<%= gstAmount.toFixed(2) %></strong><br />
+            <% } else { %>
+            <!-- No GST for zero amount -->
+            <% } %> <% if (totalAmount > 0) { %>
+            <strong>Total: ₹<%= totalWithGst.toFixed(2) %></strong
             ><br />
-            <strong
-              >Remaining Amount: ₹<%= (remainingAmount).toFixed(2) %></strong
+            <% } else { %>
+            <strong>Total: ₹<%= totalAmount.toFixed(2) %></strong><br />
+            <% } %>
+
+            <strong>Amount Paid: ₹<%= advancePayment.toFixed(2) %></strong
+            ><br />
+            <strong>Remaining Amount: ₹<%= remainingAmount.toFixed(2) %></strong
             ><br />
           </td>
         </tr>

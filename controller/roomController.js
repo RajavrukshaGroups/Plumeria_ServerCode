@@ -685,6 +685,11 @@ const createBooking = async (req, res) => {
       }
     }
 
+    const totalCost = newBooking.totalCost || 0;
+    const gstRate = totalCost > 7000 ? 0.18 : 0.12;
+    const gstAmount = Math.round(totalCost * gstRate);
+    const totalWithGst = totalCost + gstAmount;
+
     await sendBookingEmails({
       bookingId: newBooking.bookingId,
       guestDetails: {
@@ -710,6 +715,9 @@ const createBooking = async (req, res) => {
       formattedCheckInDate: newBooking.checkInDate,
       formattedCheckOutDate: newBooking.checkOutDate,
       totalAmount: newBooking.totalCost,
+      gstRate,
+      gstAmount,
+      totalWithGst,
       advancePayment: newBooking.payment.amountPaid,
       remainingAmount: newBooking.payment.balanceDue,
       amountInWords: numberToWords.toWords(newBooking.totalCost).toUpperCase(),
@@ -736,6 +744,13 @@ const viewReceipt = async (req, res) => {
 
     console.log("guest details", booking);
 
+    const totalAmount = booking.totalCost || 0;
+    const gstRate = totalAmount > 7000 ? 0.18 : 0.12;
+    const gstAmount = Math.round(totalAmount * gstRate);
+    const totalWithGst = totalAmount + gstAmount;
+
+    console.log("gst amount", gstAmount);
+
     res.render("receipt", {
       bookingId: booking.bookingId,
       guestDetails: {
@@ -760,7 +775,11 @@ const viewReceipt = async (req, res) => {
       })),
       formattedCheckInDate: booking.checkInDate,
       formattedCheckOutDate: booking.checkOutDate,
-      totalAmount: booking.totalCost,
+      // totalAmount: booking.totalCost,
+      totalAmount,
+      gstRate, // for display as percentage
+      gstAmount,
+      totalWithGst,
       advancePayment: booking.payment.amountPaid,
       remainingAmount: booking.payment.balanceDue,
       amountInWords: numberToWords.toWords(booking.totalCost).toUpperCase(),
