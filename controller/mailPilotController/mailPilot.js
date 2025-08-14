@@ -5,6 +5,7 @@ const sendBulkMail = async (req, res) => {
   try {
     const { subject, message, to, fromEmail } = req.body;
     const attachment = req.files?.attachment;
+    const images = req.files?.images;
 
     console.log("attachment info:", {
       name: attachment?.name,
@@ -78,6 +79,36 @@ const sendBulkMail = async (req, res) => {
       });
     }
 
+    // if (images) {
+    //   const imageFiles = Array.isArray(images) ? images : [images];
+    //   imageFiles.forEach((img) => {
+    //     const imgContent = img.data.length
+    //       ? img.data
+    //       : fs.readFileSync(img.tempFilePath);
+    //     attachments.push({
+    //       filename: img.name,
+    //       content: imgContent,
+    //       contentType: img.mimetype,
+    //     });
+    //   });
+    // }
+
+    if (images) {
+      const imageFiles = Array.isArray(images) ? images : [images];
+      imageFiles.forEach((img, index) => {
+        const imgContent = img.data.length
+          ? img.data
+          : fs.readFileSync(img.tempFilePath);
+
+        attachments.push({
+          filename: img.name,
+          content: imgContent,
+          contentType: img.mimetype,
+          cid: `inlineImage${index}@mail`, // unique content ID
+        });
+      });
+    }
+
     console.log("attachments", attachments);
 
     // Send emails individually
@@ -90,21 +121,37 @@ const sendBulkMail = async (req, res) => {
             subject,
             text: message,
             html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #2d3748;">${subject}</h2>
-                    <div style="line-height: 1.6;">
-                      ${message.replace(/\n/g, "<br>")}
-                    </div>
-                    ${
-                      attachment
-                        ? `<p style="margin-top: 20px; font-size: 0.9em; color: #4a5568;">
-                      <strong>Attachment:</strong> ${attachment.name}
-                    </p>`
-                        : ""
-                    }
-                    <footer style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 0.8em; color: #718096;">
-                    <p>${senderName}</p>
-                    </footer>
-                  </div>`,
+                <h2 style="color: #2d3748;">${subject}</h2>
+                <div style="line-height: 1.6;">
+                  ${message.replace(/\n/g, "<br>")}
+                </div>
+
+                ${
+                  images
+                    ? `<div style="margin-top: 20px;">
+                        ${(Array.isArray(images) ? images : [images])
+                          .map(
+                            (_, i) =>
+                              `<img src="cid:inlineImage${i}@mail" style="max-width: 100%; margin-bottom: 10px;" />`
+                          )
+                          .join("")}
+                      </div>`
+                    : ""
+                }
+
+                ${
+                  attachment
+                    ? `<p style="margin-top: 20px; font-size: 0.9em; color: #4a5568;">
+                        <strong>Attachment:</strong> ${attachment.name}
+                      </p>`
+                    : ""
+                }
+
+                <div style="margin-top: 20px;">Regards</div>
+                <footer style="font-size: 0.8em; color: #718096;">
+                  <p><strong>${senderName}</strong></p>
+                </footer>
+              </div>`,
             attachments,
             headers: {
               "Content-Transfer-Encoding": "base64",
@@ -119,6 +166,12 @@ const sendBulkMail = async (req, res) => {
 
     if (attachment?.tempFilePath) {
       fs.unlinkSync(attachment.tempFilePath);
+    }
+
+    if (images) {
+      (Array.isArray(images) ? images : [images]).forEach((img) => {
+        if (img.tempFilePath) fs.unlinkSync(img.tempFilePath);
+      });
     }
 
     const failedEmails = results.filter((result) => result.status === "failed");
