@@ -121,7 +121,6 @@ const sendBulkMail = async (req, res) => {
             subject,
             text: message,
             html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #2d3748;">${subject}</h2>
                 <div style="line-height: 1.6;">
                   ${message.replace(/\n/g, "<br>")}
                 </div>
