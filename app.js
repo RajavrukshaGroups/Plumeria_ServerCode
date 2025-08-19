@@ -33,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 const allowedOrigins = [
   "https://admin.plumeriaresort.in",
   "https://test.plumeriaresort.in",
-  "https://digitaleliteservices.in",
+  "https://test.digitaleliteservices.in",
 ];
 
 // const allowedOrigins = ["http://localhost:5173"];
