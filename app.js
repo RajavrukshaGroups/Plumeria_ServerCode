@@ -33,6 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 const allowedOrigins = [
   "https://admin.plumeriaresort.in",
   "https://test.plumeriaresort.in",
+  "https://plumeriaresort.in",
   "https://test.digitaleliteservices.in",
 ];
 
