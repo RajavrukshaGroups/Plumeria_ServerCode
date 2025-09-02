@@ -34,6 +34,7 @@ const allowedOrigins = [
   "https://admin.plumeriaresort.in",
   "https://test.plumeriaresort.in",
   "https://test.digitaleliteservices.in",
+  "https://plumeriaresort.in",
 ];
 
 // const allowedOrigins = ["http://localhost:5173"];
