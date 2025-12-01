@@ -35,6 +35,7 @@ const allowedOrigins = [
   "https://test.plumeriaresort.in",
   "https://plumeriaresort.in",
   "https://test.digitaleliteservices.in",
+  "https://digitaleliteservices.in",
   "https://plumeriaresort.in",
 ];
 
