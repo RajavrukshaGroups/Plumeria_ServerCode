@@ -73,7 +73,13 @@ mongoose
   .connect(MONGO_URL)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error", err));
-
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Plumeria Resort API Running Successfully",
+    serverTime: new Date(),
+  });
+});
 app.use("/", userRoutes);
 app.use("/rooms", roomRoutes);
 app.use("/payments", paymentRoutes);
