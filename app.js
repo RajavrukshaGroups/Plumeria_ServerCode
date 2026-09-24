@@ -37,9 +37,10 @@ const allowedOrigins = [
   "https://test.digitaleliteservices.in",
   "https://digitaleliteservices.in",
   "https://plumeriaresort.in",
+  "https://digital-marketing.digitaleliteservices.in",
 ];
 
-// const allowedOrigins = ["http://localhost:5173"];
+ //const allowedOrigins = ["http://localhost:3000"];
 // const allowedOrigins = ["http://localhost:5175", "http://localhost:5174"];
 
 app.use(

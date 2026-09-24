@@ -57,6 +57,77 @@ const sendMail = async (req, res) => {
   }
 };
 
+// -------------------------
+// Send Enquiry
+// -------------------------
+
+
+const sendEnquiry = async (req, res) => {
+  try {
+    const { name, email, phone, message } = req.body;
+
+    if (!name || !email || !phone) {
+      return res.status(400).json({
+        success: false,
+        message: "name, email and phone are required fields",
+      });
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Landing Page Enquiry" <${process.env.EMAIL_USER}>`,
+      to: process.env.RECEIVER_EMAILS,
+      subject: "New Landing Page Enquiry",
+
+      html: `
+        <h2>New Enquiry Received</h2>
+
+        <table border="1" cellpadding="10" cellspacing="0">
+          <tr>
+            <td><strong>Name</strong></td>
+            <td>${name}</td>
+          </tr>
+
+          <tr>
+            <td><strong>Email</strong></td>
+            <td>${email}</td>
+          </tr>
+
+          <tr>
+            <td><strong>Phone</strong></td>
+            <td>${phone}</td>
+          </tr>
+
+          <tr>
+            <td><strong>Message</strong></td>
+            <td>${message || "N/A"}</td>
+          </tr>
+        </table>
+      `,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Email sent successfully",
+    });
+  } catch (err) {
+    console.error("Email sending error:", err);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to send email",
+    });
+  }
+};
+
+
 export default {
-  sendMail,
+  sendMail,sendEnquiry
 };

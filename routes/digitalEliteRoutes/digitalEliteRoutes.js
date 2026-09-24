@@ -4,5 +4,6 @@ import mailController from "../../controller/digitalEliteController/digitalElite
 const router = express.Router();
 
 router.post("/sendMail", mailController.sendMail);
+router.post("/enquiry", mailController.sendEnquiry)
 
 export default router;
